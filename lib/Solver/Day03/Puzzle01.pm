@@ -18,17 +18,26 @@ sub check {
   return $flag;
 }
 
+sub split_input {
+  my $self = shift;
+  my $input = shift;
+
+  my @lines = split ( "\n", $input );
+
+  my @output_lines = map { [ $_ =~ /^\s*(\d+)\s+(\d+)\s+(\d+)$/ ] } @lines;
+  
+  return @output_lines;
+}
+
 sub run {
   my ( $self, @args ) = @_;
 
-  my @lines = split ( "\n", $args[0] );
+  my @lines = $self->split_input( $args[0] );
 
   my $count = 0;
 
   for my $line ( @lines ) {
-    my ( $a, $b, $c ) = $line =~ /^\s*(\d+)\s+(\d+)\s+(\d+)$/;
-
-    $count++ if $self->check( $a, $b, $c );
+    $count++ if $self->check( @$line );
   }
 
   return $count;
