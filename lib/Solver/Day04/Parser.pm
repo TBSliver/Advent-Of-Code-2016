@@ -8,11 +8,21 @@ has input => (
   required => 1
 );
 
-has name => (
+has raw_name => (
   is => 'lazy',
   builder => sub {
     my $self = shift;
     my ( $name ) = $self->input =~ /^([a-z\-]+)/;
+    $name =~ s/\-$//;
+    return $name;
+  },
+);
+
+has name => (
+  is => 'lazy',
+  builder => sub {
+    my $self = shift;
+    my $name = $self->raw_name;
     $name =~ s/\-//g;
     return $name;
   },
@@ -52,6 +62,28 @@ sub calc_checksum {
   my @sorted = sort { $count{$b} <=> $count{$a} || $a cmp $b } keys %count;
   return substr join('', @sorted), 0, 5;
  
+}
+
+sub decode_name {
+  my $self = shift;
+  
+  my @input = split( '', $self->raw_name );
+
+  my $remainder = $self->sector_id % 26;
+  my %decode = map {
+    my $oa = ord('a');
+    chr($_) => chr(
+      (
+        ($_ - $oa + $remainder) % 26
+      ) + $oa
+    )
+  } ord ('a') .. ord ('z');
+  $decode{ '-' } = ' ';
+  $decode{ ' ' } = ' ';
+  
+  my @output = map { $decode{$_ } } @input;
+
+  return join('', @output);
 }
 
 1;
