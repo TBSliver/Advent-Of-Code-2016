@@ -26,6 +26,7 @@ option puzzle => (
 
 has day_solver => (
   is => 'lazy',
+  clearer => 1,
   builder => sub {
     my $self = shift;
     my $module_name
@@ -45,7 +46,17 @@ sub new_with_actions {
 sub run {
   my ( $self, @args ) = @_;
 
-  return $self->day_solver->run( @args );
+  my $result = $self->day_solver->run( @args );
+
+  $self->reset;
+
+  return $result;
+}
+
+sub reset {
+  my $self = shift;
+
+  $self->clear_day_solver;
 }
 
 1;
