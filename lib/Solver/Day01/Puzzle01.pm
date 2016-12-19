@@ -43,6 +43,18 @@ sub add_distance {
   $self->distances->{$self->directions->[$self->dir_index]} += $distance;
 }
 
+sub get_ns_distance {
+  my $self = shift;
+  my $ns_distance = $self->distances->{'north'} - $self->distances->{'south'};
+  return $ns_distance;
+}
+
+sub get_we_distance {
+  my $self = shift;
+  my $we_distance = $self->distances->{'east'} - $self->distances->{'west'};
+  return $we_distance;
+}
+
 sub run {
   my ( $self, @args ) = @_;
 
@@ -62,11 +74,8 @@ sub run {
     $self->add_distance( $command_distance );
   }
 
-  my $ns_distance = $self->distances->{'north'} - $self->distances->{'south'};
-  $ns_distance = $ns_distance < 0 ? -$ns_distance : $ns_distance;
-
-  my $we_distance = $self->distances->{'east'} - $self->distances->{'west'};
-  $we_distance = $we_distance < 0 ? -$we_distance : $we_distance;
+  my $ns_distance = abs $self->get_ns_distance;
+  my $we_distance = abs $self->get_we_distance;
 
   return $ns_distance + $we_distance;
 }
