@@ -30,6 +30,10 @@ my %entries = (
     raw_name => 'totally-real-room',
     decoded => 'lglsddq jwsd jgge',
   },
+  'qzmt-zixmtkozy-ivhz-343[]' => {
+    raw_name => 'qzmt-zixmtkozy-ivhz',
+    decoded => 'very encrypted name',
+  },
 );
 
 for my $item ( keys %entries ) {
@@ -39,7 +43,7 @@ for my $item ( keys %entries ) {
 }
 
 is $solver->run(
-join ("\n", sort keys %entries ), 'bch o fsoz fcca',
-), 404;
+join ("\n", sort keys %entries ), 'very encrypted name',
+), 343;
 
 done_testing;
