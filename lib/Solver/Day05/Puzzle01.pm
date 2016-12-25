@@ -4,25 +4,39 @@ use Moo;
 use Devel::Dwarn;
 use Digest::MD5 qw/ md5_hex /;
 
+has password => (
+  is => 'rwp',
+  default => '',
+);
+
 sub run {
   my ( $self, $door_id ) = @_;
 
   my $index = 0;
-  my $password = '';
   while ( 1 ) {
 
     my $input = $door_id . $index;
     my $digest = md5_hex( $input );
 
-    if ( $digest =~ /^0{5}/ ) {
-      $password .= substr $digest, 5, 1;
-    }
+    $self->decrypt( $digest );
 
-    last if length $password >= 8;
+    last if length $self->password >= 8;
     $index++;
   }
 
-  return $password;
+  return $self->password;
+}
+
+sub decrypt {
+  my ( $self, $digest ) = @_;
+
+  my $decrypted = undef;
+
+  if ( $digest =~ /^0{5}/ ) {
+    $decrypted = substr $digest, 5, 1;
+
+    $self->_set_password( $self->password . $decrypted );
+  }
 }
 
 1;
