@@ -17,6 +17,13 @@ sub run {
     }
   }
 
+  my $message = $self->get_message( @hashes );
+  return $message;
+}
+
+sub get_message {
+  my ( $self, @hashes ) = @_;
+
   my $message = '';
 
   for my $hash ( @hashes ) {
